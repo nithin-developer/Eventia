@@ -1,0 +1,9 @@
+flask
+python-dotenv
+flask-cors
+flask-sqlalchemy
+flask-migrate
+pyjwt
+pyotp
+reportlab
+psycopg2-binary
