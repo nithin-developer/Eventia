@@ -21,7 +21,7 @@ export const sidebarData: SidebarData = {
     {
       name: "Eventia",
       logo: "/src/assets/vvce.png",
-      plan: "Vidyavardhaka College of Engineering",
+      plan: "Event Management System",
     },
   ],
   navGroups: [
@@ -39,9 +39,9 @@ export const sidebarData: SidebarData = {
         { title: "Volunteers", url: "/volunteers", icon: Users },
         { title: "Speakers", url: "/speakers", icon: UserCog },
         { title: "Agenda", url: "/agenda", icon: Calendar },
-        { title: "Feedback", url: "/feedback", icon: Activity },
+        // { title: "Feedback", url: "/feedback", icon: Activity },
         { title: "Certificates", url: "/certificates", icon: IconShieldLock },
-        { title: "Gallery", url: "/gallery", icon: Calendar },
+        // { title: "Gallery", url: "/gallery", icon: Calendar },
       ],
     },
     {

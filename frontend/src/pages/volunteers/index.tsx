@@ -1,12 +1,8 @@
-import { Header } from '@/components/layout/header'
-import { Main } from '@/components/layout/main'
-import { Search } from '@/components/search'
-import { ThemeSwitch } from '@/components/theme-switch'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { ResponsivePageLayout } from '@/components/layout/responsive-page-layout'
+import { ResponsiveCard } from '@/components/ui/responsive-card'
+import { DataTable } from '@/components/ui/data-table'
 import { Button } from '@/components/ui/button'
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { Plus, Pencil, Trash2, Users, MoreHorizontal } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createVolunteer, deleteVolunteer, listVolunteers, updateVolunteer, Volunteer, CreateVolunteerInput } from '@/api/volunteers'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -14,7 +10,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useState } from 'react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { ColumnDef } from '@tanstack/react-table'
+import { useState, useMemo } from 'react'
 import { toast } from 'sonner'
 
 export default function VolunteersPage() {
@@ -38,70 +36,89 @@ export default function VolunteersPage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['volunteers'] }); toast.success('Volunteer deleted') },
     onError: () => toast.error('Failed to delete volunteer')
   })
+
+  const columns: ColumnDef<Volunteer>[] = useMemo(() => [
+    {
+      id: "serial",
+      header: "S.No",
+      cell: ({ row }) => <div className="w-12">{row.index + 1}</div>,
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => <div>{row.getValue("role") || "—"}</div>,
+    },
+    {
+      accessorKey: "phone",
+      header: "Phone",
+      cell: ({ row }) => <div>{row.getValue("phone") || "—"}</div>,
+    },
+    {
+      id: "tasks",
+      header: "Assigned Tasks",
+      cell: () => <div>—</div>,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const volunteer = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <div className="p-1 space-y-1">
+                <EditButtonWrapper volunteer={volunteer} onSave={(patch) => mutUpdate.mutate({ id: volunteer.id, patch })} />
+                <DeleteButtonWrapper volunteerId={volunteer.id} onConfirm={() => mutDelete.mutate(volunteer.id)} />
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ], [mutUpdate, mutDelete])
   return (
-    <>
-      <Header>
-        <Search />
-        <div className="ml-auto flex items-center space-x-4">
-          <ThemeSwitch />
-          <ProfileDropdown />
+    <ResponsivePageLayout
+      title="Volunteers"
+      description="Manage volunteers and assign tasks."
+      actions={<NewVolunteerDialog onCreate={(data) => mutCreate.mutate(data)} />}
+    >
+      {isLoading ? (
+        <div className="flex items-center justify-center h-32">
+          <div className="text-sm text-muted-foreground">Loading...</div>
         </div>
-      </Header>
-      <Main>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Volunteers</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage volunteers and assign tasks.</p>
-          </div>
-          <NewVolunteerDialog onCreate={(data)=>mutCreate.mutate(data)} />
-        </div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Volunteer List</CardTitle>
-            <CardDescription>CRUD and task assignment</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Assigned Tasks</TableHead>
-                  <TableHead className="w-[140px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading && (
-                  <TableRow>
-                    <TableCell colSpan={5}>Loading…</TableCell>
-                  </TableRow>
-                )}
-                {!isLoading && (!volunteers || volunteers.length === 0) && (
-                  <TableRow>
-                    <TableCell colSpan={5}>No volunteers yet</TableCell>
-                  </TableRow>
-                )}
-                {volunteers?.map((v: Volunteer) => (
-                  <TableRow key={v.id}>
-                    <TableCell>{v.name}</TableCell>
-                    <TableCell>{v.role || '—'}</TableCell>
-                    <TableCell>{v.phone || '—'}</TableCell>
-                    <TableCell>—</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2 justify-end">
-                        <EditVolunteerDialog volunteer={v} onSave={(patch)=>mutUpdate.mutate({ id: v.id, patch })} />
-                        <DeleteVolunteerButton onConfirm={()=>mutDelete.mutate(v.id)} />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </Main>
-    </>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={volunteers || []}
+          searchPlaceholder="Search volunteers..."
+          searchColumn="name"
+        />
+      )}
+    </ResponsivePageLayout>
+  )
+}
+
+// Helper components for actions in dropdown
+function EditButtonWrapper({ volunteer, onSave }: { volunteer: Volunteer, onSave: (patch: Partial<CreateVolunteerInput>) => void }) {
+  return (
+    <EditVolunteerDialog volunteer={volunteer} onSave={onSave} />
+  )
+}
+
+function DeleteButtonWrapper({ onConfirm }: { volunteerId: string, onConfirm: () => void }) {
+  return (
+    <DeleteVolunteerButton onConfirm={onConfirm} />
   )
 }
 
@@ -185,7 +202,9 @@ function EditVolunteerDialog({ volunteer, onSave }:{ volunteer: Volunteer; onSav
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm"><Pencil className="h-4 w-4 mr-1"/>Edit</Button>
+        <Button variant="ghost" size="sm" className="w-full justify-start h-8 px-2">
+          <Pencil className="h-4 w-4 mr-2"/>Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
@@ -220,7 +239,9 @@ function DeleteVolunteerButton({ onConfirm }:{ onConfirm: () => void }){
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" size="sm"><Trash2 className="h-4 w-4 mr-1"/>Delete</Button>
+        <Button variant="ghost" size="sm" className="w-full justify-start h-8 px-2 text-destructive hover:text-destructive">
+          <Trash2 className="h-4 w-4 mr-2"/>Delete
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -58,3 +58,18 @@ export async function reorderBoard(columns: Record<TaskStatus, string[]>): Promi
   const res = await apiClient.post(`/api/tasks/reorder`, { columns });
   return res.data as { updated: number };
 }
+
+export interface GenerateTasksInput {
+  prompt: string;
+}
+
+export interface GenerateTasksResponse {
+  message: string;
+  tasks: Task[];
+  count: number;
+}
+
+export async function generateTasksFromPrompt(input: GenerateTasksInput): Promise<GenerateTasksResponse> {
+  const res = await apiClient.post("/api/tasks/generate-from-prompt", input);
+  return res.data as GenerateTasksResponse;
+}

@@ -2,6 +2,7 @@ import { UserAuthForm } from "./components/user-auth-form";
 import Silk from "@/components/aurora";
 import { IconReportMedical } from "@tabler/icons-react";
 import CircularText from "@/components/curvedloop";
+import { Calendar } from "lucide-react";
 
 export default function SignIn2() {
   return (
@@ -17,8 +18,8 @@ export default function SignIn2() {
           />
         </div>
         <div className="relative z-20 flex items-center text-lg font-medium">
-          <IconReportMedical className="mr-2 h-6 w-6" />
-          Vidyavardhaka College of Engineering
+          <Calendar className="mr-2 h-6 w-6" />
+          Eventia
         </div>
 
         {/* <img
@@ -31,7 +32,7 @@ export default function SignIn2() {
 
         <div className="relative z-20 mt-auto flex flex-col items-center space-y-4">
           <CircularText
-            text="VIDYAVARDHAKA☆COLLEGE☆ENGINEERING☆"
+            text="EVENTIA☆EVENT☆MANAGEMENT☆SYSTEM☆"
             onHover="speedUp"
             spinDuration={20}
             className="custom-class"
@@ -41,17 +42,17 @@ export default function SignIn2() {
         <div className="relative z-20 mt-auto">
           <div className="space-y-4">
             <h2 className="text-3xl font-bold leading-tight">
-              Welcome to Professional Healthcare Management
+              Welcome to Autonomous Event Management System
             </h2>
             <p className="text-lg text-white/90 leading-relaxed">
-              Streamline your healthcare operations with our comprehensive
+              Streamline your event operations with our comprehensive
               document management system. Secure, efficient, and designed for
-              healthcare professionals.
+              event management.
             </p>
             <div className="flex items-center space-x-4 text-sm text-white/80">
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                HIPAA Compliant
+                Responsive Design
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
@@ -71,7 +72,7 @@ export default function SignIn2() {
               to log into your account
             </p>
           </div>
-          <UserAuthForm />
+          <UserAuthForm />  
           <p className="text-muted-foreground px-8 text-center text-sm mt-4">
             By clicking login, you agree to our{" "}
             <a

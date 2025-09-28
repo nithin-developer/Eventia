@@ -1,21 +1,18 @@
 import { Activity, Users, Calendar, Layers3, Clock, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
 
-import { Header } from '@/components/layout/header';
-import { Main } from '@/components/layout/main';
-import { Search } from '@/components/search';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { ProfileDropdown } from '@/components/profile-dropdown';
+import { ResponsivePageLayout } from '@/components/layout/responsive-page-layout';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 
 // Super Admin (full access) dashboard
 function StatCard({ icon: Icon, label, value, sub }: { icon: any; label: string; value: string | number; sub?: string }) {
   return (
-    <Card>
-      <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+    <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+      <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0 relative">
         <CardTitle className="text-sm font-medium flex items-center gap-2"><Icon className="h-4 w-4" />{label}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         <div className="text-2xl font-semibold">{value}</div>
         {sub && <div className="text-xs text-muted-foreground mt-1">{sub}</div>}
       </CardContent>
@@ -26,43 +23,33 @@ function StatCard({ icon: Icon, label, value, sub }: { icon: any; label: string;
 function SuperAdminDashboard() {
   // In future: fetch aggregated metrics (batchesCount, trainersCount, eventsActive, sessionsToday, attendanceRate, cancellations, etc.)
   return (
-    <>
-      <Header>
-        <Search />
-        <div className="ml-auto flex items-center space-x-4">
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
-      <Main>
-        <div className="space-y-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">Platform Overview</h1>
-              <p className="text-sm text-muted-foreground mt-1">Full administrative visibility across all entities.</p>
-            </div>
-            <Badge variant="outline" className="flex items-center"><Activity className="h-4 w-4 mr-1"/>All Access</Badge>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <ResponsivePageLayout
+      title="Platform Overview"
+      description="Full administrative visibility across all entities."
+      actions={<Badge variant="outline" className="flex items-center"><Activity className="h-4 w-4 mr-1"/>All Access</Badge>}
+    >
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard icon={Layers3} label="Batches" value={8} sub="Active" />
             <StatCard icon={Users} label="Trainers" value={15} sub="Active" />
             <StatCard icon={Calendar} label="Events" value={12} sub="This Month" />
             <StatCard icon={Clock} label="Sessions Today" value={34} />
           </div>
           <div className="grid gap-4 lg:grid-cols-3">
-            <Card className="lg:col-span-2">
-              <CardHeader>
+            <Card className="lg:col-span-2 group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+              <CardHeader className="relative">
                 <CardTitle>Events Activity</CardTitle>
                 <CardDescription>Sessions trend (placeholder chart)</CardDescription>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground h-40 flex items-center justify-center border border-dashed rounded-md">Chart area</CardContent>
+              <CardContent className="text-sm text-muted-foreground h-40 flex items-center justify-center border border-dashed rounded-md relative">Chart area</CardContent>
             </Card>
-            <Card>
-              <CardHeader>
+            <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+              <CardHeader className="relative">
                 <CardTitle>Session Health</CardTitle>
                 <CardDescription>Today&apos;s attendance snapshot</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between"><span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-500"/>Completed</span><span>18</span></div>
                   <div className="flex items-center justify-between"><span className="flex items-center gap-2"><Clock className="h-4 w-4 text-blue-500"/>Upcoming</span><span>10</span></div>
@@ -72,18 +59,17 @@ function SuperAdminDashboard() {
               </CardContent>
             </Card>
           </div>
-          <Card>
-            <CardHeader>
+          <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+            <CardHeader className="relative">
               <CardTitle>Recent Administrative Actions</CardTitle>
               <CardDescription>Audit style list placeholder</CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground space-y-2">
+            <CardContent className="text-sm text-muted-foreground space-y-2 relative">
               <div>No recent actions loaded.</div>
             </CardContent>
           </Card>
-        </div>
-      </Main>
-    </>
+    </ResponsivePageLayout>
   );
 }
 

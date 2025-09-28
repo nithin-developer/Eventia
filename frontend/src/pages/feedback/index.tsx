@@ -1,44 +1,30 @@
-import { Header } from '@/components/layout/header'
-import { Main } from '@/components/layout/main'
-import { Search } from '@/components/search'
-import { ThemeSwitch } from '@/components/theme-switch'
-import { ProfileDropdown } from '@/components/profile-dropdown'
+import { ResponsivePageLayout } from '@/components/layout/responsive-page-layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function FeedbackPage() {
   return (
-    <>
-      <Header>
-        <Search />
-        <div className="ml-auto flex items-center space-x-4">
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
-      <Main>
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Feedback Analytics</h1>
-            <p className="text-sm text-muted-foreground mt-1">Session and overall event feedback.</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
+    <ResponsivePageLayout
+      title="Feedback Analytics"
+      description="Session and overall event feedback."
+    >
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+            <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+              <CardHeader className="relative">
                 <CardTitle>Ratings</CardTitle>
                 <CardDescription>Charts for session ratings</CardDescription>
               </CardHeader>
-              <CardContent className="h-48 border border-dashed rounded-md text-sm text-muted-foreground flex items-center justify-center">Chart area</CardContent>
+              <CardContent className="h-48 border border-dashed rounded-md text-sm text-muted-foreground flex items-center justify-center relative">Chart area</CardContent>
             </Card>
-            <Card>
-              <CardHeader>
+            <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+              <CardHeader className="relative">
                 <CardTitle>Comments</CardTitle>
                 <CardDescription>Word cloud of comments</CardDescription>
               </CardHeader>
-              <CardContent className="h-48 border border-dashed rounded-md text-sm text-muted-foreground flex items-center justify-center">Word cloud area</CardContent>
+              <CardContent className="h-48 border border-dashed rounded-md text-sm text-muted-foreground flex items-center justify-center relative">Word cloud area</CardContent>
             </Card>
-          </div>
-        </div>
-      </Main>
-    </>
+      </div>
+    </ResponsivePageLayout>
   )
 }

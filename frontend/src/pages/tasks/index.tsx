@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import { AITaskGenerator } from '@/components/ai-task-generator'
 import {
   DndContext,
   PointerSensor,
@@ -133,16 +134,19 @@ export default function TasksPage() {
         </div>
       </Header>
       <Main>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Task Manager</h1>
-            <p className="text-sm text-muted-foreground mt-1">Kanban board with drag-and-drop and CRUD.</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">Task Manager</h1>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">Kanban board with drag-and-drop and CRUD.</p>
           </div>
-          <NewTaskButton onCreate={(t) => mutCreate.mutate(t)} />
+          <div className="flex-shrink-0 flex gap-3">
+            <AITaskGenerator />
+            <NewTaskButton onCreate={(t) => mutCreate.mutate(t)} />
+          </div>
         </div>
 
         <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 xl:grid-cols-3">
             {(['todo','in_progress','done'] as TaskStatus[]).map((col) => (
               <KanbanColumn
                 key={col}
@@ -171,12 +175,20 @@ function KanbanColumn({ title, status, tasks, isLoading, onEdit, onDelete }:{
 }){
   const droppable = useDroppable({ id: `col:${status}` })
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="capitalize">{title}</CardTitle>
-        <CardDescription>{(tasks?.length ?? 0)} items</CardDescription>
+    <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+      <CardHeader className="pb-4 relative">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <span className="text-primary font-medium text-sm">{(tasks?.length ?? 0)}</span>
+          </div>
+          <div>
+            <CardTitle className="capitalize text-lg font-semibold">{title}</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">{(tasks?.length ?? 0)} items</CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent ref={droppable.setNodeRef}>
+      <CardContent ref={droppable.setNodeRef} className="pt-0 relative">
         <SortableContext items={(tasks||[]).map(t => `${status}:${t.id}`)} strategy={verticalListSortingStrategy}>
           <ul className="space-y-2 min-h-[60px]">
             {isLoading && <li className="text-sm text-muted-foreground">Loading…</li>}

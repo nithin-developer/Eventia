@@ -7,3 +7,4 @@ pyjwt
 pyotp
 reportlab
 psycopg2-binary
+google-generativeai

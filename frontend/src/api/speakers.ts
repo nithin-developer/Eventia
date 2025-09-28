@@ -6,6 +6,7 @@ export interface Speaker {
   email?: string | null;
   bio?: string | null;
   expertise?: string | null;
+  session_count?: number;
 }
 
 export interface CreateSpeakerInput {

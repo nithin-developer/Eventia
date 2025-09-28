@@ -5,7 +5,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, Plus, Pencil, Trash2 } from 'lucide-react'
+import { Upload, Plus, Pencil, Trash2, Calendar } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { AgendaSession, listAgendaSessions, uploadAgenda, createAgendaSession, updateAgendaSession, deleteAgendaSession, CreateAgendaSessionInput } from '@/api/agenda'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -50,23 +50,32 @@ export default function AgendaPage() {
         </div>
       </Header>
       <Main>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Agenda Builder</h1>
-            <p className="text-sm text-muted-foreground mt-1">Upload Excel and edit sessions grouped by track and timeslot.</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">Agenda Builder</h1>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">Upload Excel and edit sessions grouped by track and timeslot.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
             <NewSessionDialog onCreate={(data)=>mutCreate.mutate(data)} />
             <UploadJsonDialog onSubmit={(payload)=>mutUpload.mutate(payload)} />
           </div>
         </div>
-        <Card>
-          <CardHeader>
-            <CardTitle>Agenda Editor</CardTitle>
-            <CardDescription>Manage sessions by track and timeslot</CardDescription>
+        <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+          <CardHeader className="pb-4 relative">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Calendar className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg font-semibold">Agenda Editor</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">Manage sessions by track and timeslot</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
-            <Table>
+          <CardContent className="pt-0 relative">
+            <div className="overflow-x-auto">
+              <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Title</TableHead>
@@ -102,6 +111,7 @@ export default function AgendaPage() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           </CardContent>
         </Card>
       </Main>

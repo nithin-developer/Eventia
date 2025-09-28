@@ -4,7 +4,7 @@ import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Image as ImageIcon, FileType } from 'lucide-react'
+import { FileText, Code, Image, FileType } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { listResources, ResourceFile, uploadResource, uploadHtmlTemplate } from '@/api/resources'
 import { FileUploadDialog } from './components/file-upload-dialog'
@@ -54,12 +54,20 @@ export default function ResourcesPage() {
             <TabsTrigger value="templates">Templates</TabsTrigger>
           </TabsList>
           <TabsContent value="uploads">
-            <Card>
-              <CardHeader>
-                <CardTitle>All Files</CardTitle>
-                <CardDescription>Images and documents you've uploaded</CardDescription>
+            <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+              <CardHeader className="pb-4 relative">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <FileText className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg font-semibold">All Files</CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground">Images and documents you've uploaded</CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0 relative">
                 <div className="space-y-2 text-sm">
                   {isLoading && <div>Loading…</div>}
                   {!isLoading && (!files || files.length === 0) && (
@@ -84,12 +92,20 @@ export default function ResourcesPage() {
             </Card>
           </TabsContent>
           <TabsContent value="templates">
-            <Card>
-              <CardHeader>
-                <CardTitle>Templates Library</CardTitle>
-                <CardDescription>HTML templates for certificates and invitations</CardDescription>
+            <Card className="group relative overflow-hidden border-border/60 hover:shadow-md transition-all">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-100 transition-opacity pointer-events-none" />
+              <CardHeader className="pb-4 relative">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Code className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg font-semibold">Templates Library</CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground">HTML templates for certificates and invitations</CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0 relative">
                 <TemplatesGrid files={files?.filter(f => (f.category || '') === 'template')} isLoading={isLoading} />
               </CardContent>
             </Card>
@@ -108,7 +124,7 @@ function formatSize(n: number){
 }
 
 function FileIcon({ contentType }:{ contentType: string }){
-  if (contentType?.startsWith('image/')) return <ImageIcon className="h-5 w-5 text-blue-500" />
+  if (contentType?.startsWith('image/')) return <Image className="h-5 w-5 text-blue-500" />
   if (contentType === 'text/html') return <FileText className="h-5 w-5 text-orange-500" />
   if (contentType === 'application/pdf') return <FileType className="h-5 w-5 text-red-500" />
   return <FileType className="h-5 w-5 text-muted-foreground" />

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Professional Participation Certificate</title>
-    <style>
+  <style>
       @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@400;700&display=swap");
 
       body,
@@ -19,6 +19,44 @@
         justify-content: center;
         align-items: center;
       }
+
+      #controls {
+        width: 297mm;
+        max-width: 100%;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      #controls .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 12px;
+        align-items: end;
+      }
+
+      #controls label { font-size: 12px; color: #374151; display: block; margin-bottom: 4px; }
+      #controls input[type="text"], #controls input[type="date"] {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      #controls .actions { display: flex; gap: 8px; }
+      #controls .btn {
+        padding: 10px 14px;
+        border: none;
+        border-radius: 6px;
+        background: #10b981;
+        color: #fff;
+        cursor: pointer;
+      }
+      #controls .btn.secondary { background: #6b7280; }
 
       #certificate {
         width: 297mm; /* A4 landscape width */
@@ -85,6 +123,27 @@
   </head>
   <body>
     <div>
+      <div id="controls">
+        <div class="row">
+          <div>
+            <label for="input-name">Recipient Name</label>
+            <input id="input-name" type="text" placeholder="e.g., Jane Doe" />
+          </div>
+          <div>
+            <label for="input-event">Event Name</label>
+            <input id="input-event" type="text" placeholder="e.g., Vibeathon 2025" />
+          </div>
+          <div>
+            <label for="input-date">Event Date</label>
+            <input id="input-date" type="date" />
+          </div>
+          <div class="actions">
+            <button class="btn secondary" id="btn-update" type="button">Update Preview</button>
+            <button class="btn" id="btn-download" type="button">Download PDF</button>
+          </div>
+        </div>
+      </div>
+
       <div id="certificate">
         <h1>Certificate of Participation</h1>
         <p>This certificate is proudly presented to</p>
@@ -118,38 +177,92 @@
         </div>
       </div>
 
-      <button onclick="downloadCertificate()">Download Certificate</button>
+  <button onclick="downloadCertificate()" style="display:none">Download Certificate</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-      async function downloadCertificate() {
-        const { jsPDF } = window.jspdf;
-        const certificate = document.getElementById("certificate");
-
-        // Use html2canvas to render certificate
-        const canvas = await html2canvas(certificate, {
-          scale: 2,
-          useCORS: true,
-        });
-        const imgData = canvas.toDataURL("image/png");
-
-        // Create PDF
-        const pdf = new jsPDF({
-          orientation: "landscape",
-          unit: "mm",
-          format: "a4",
-        });
-
-        // Calculate image dimensions to maintain border
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save("certificate.pdf");
+      function fmtDatePretty(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return iso;
+        const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+        return d.toLocaleDateString(undefined, opts);
       }
+
+      function fillFromInputs() {
+        const name = document.getElementById('input-name').value.trim();
+        const event = document.getElementById('input-event').value.trim();
+        const date = document.getElementById('input-date').value;
+        if (name) document.getElementById('recipient').textContent = name;
+        if (event) document.getElementById('event-name').textContent = event;
+        if (date) document.getElementById('event-date').textContent = fmtDatePretty(date);
+      }
+
+      function applyQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        const qName = params.get('name') || '';
+        const qEvent = params.get('event') || '';
+        const qDate = params.get('date') || '';
+        const auto = params.get('autodownload');
+        if (qName) document.getElementById('input-name').value = qName;
+        if (qEvent) document.getElementById('input-event').value = qEvent;
+        if (qDate) document.getElementById('input-date').value = qDate;
+        if (!qDate && !document.getElementById('input-date').value) {
+          const today = new Date();
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth()+1).padStart(2,'0');
+          const dd = String(today.getDate()).padStart(2,'0');
+          document.getElementById('input-date').value = `${yyyy}-${mm}-${dd}`;
+        }
+        fillFromInputs();
+        if (auto === '1') {
+          setTimeout(downloadCertificate, 300);
+        }
+      }
+
+      async function downloadCertificate() {
+        try {
+          const { jsPDF } = window.jspdf;
+          const certificate = document.getElementById('certificate');
+          // ensure latest inputs applied
+          fillFromInputs();
+          // wait for web fonts to be ready to avoid fallback rendering
+          if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch {}
+          }
+          const canvas = await html2canvas(certificate, {
+            scale: Math.min(window.devicePixelRatio || 2, 3),
+            useCORS: true,
+            backgroundColor: '#ffffff'
+          });
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = pdf.internal.pageSize.getHeight();
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          // Try open in new tab first to avoid download blockers
+          try {
+            const blobUrl = pdf.output('bloburl');
+            window.open(blobUrl, '_blank');
+          } catch (e) {
+            // fallback to direct download
+            pdf.save('certificate.pdf');
+          }
+        } catch (err) {
+          console.error('Failed to generate PDF', err);
+          alert('Failed to generate certificate. See console for details.');
+        }
+      }
+
+      // Wire buttons and initialize
+      window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btn-update').addEventListener('click', fillFromInputs);
+        document.getElementById('btn-download').addEventListener('click', downloadCertificate);
+        applyQueryParams();
+      });
     </script>
   </body>
 </html>

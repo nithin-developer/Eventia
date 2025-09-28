@@ -65,12 +65,16 @@ def list_sessions():
 
 
 def serialize_speaker(s: Speaker):
+    # Get session count for this speaker
+    session_count = Session.query.filter_by(speaker_id=s.id).count()
+    
     return {
         'id': str(s.id),
         'name': s.name,
         'email': s.email,
         'bio': s.bio,
         'expertise': s.expertise,
+        'session_count': session_count,
     }
 
 
