@@ -1,4 +1,4 @@
-# 🎉 Eventia - Advanced Event Management Platform
+# 🎉 Eventia - Autonomous Event Management Platform
 
 <div align="center">
 
@@ -162,8 +162,8 @@ Built entirely with **GitHub Copilot** assistance, Eventia demonstrates the futu
 
 #### 1. Clone the Repository
 ```bash
-git clone https://github.com/nithin-developer/Eventia-Final.git
-cd Eventia-Final
+git clone https://github.com/nithin-developer/Eventia.git
+cd Eventia
 ```
 
 #### 2. Backend Setup
@@ -228,7 +228,6 @@ npm run dev
 ### 🌐 Access the Application
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:5000
-- **Admin Panel**: http://localhost:5173/admin
 
 ---
 
@@ -418,8 +417,8 @@ Eventia was developed for and won the **Best Innovation Award** at the SAP Vibea
 
 *Made with ❤️ and 🤖 AI assistance*
 
-[![GitHub Stars](https://img.shields.io/github/stars/nithin-developer/Eventia-Final?style=social)](https://github.com/nithin-developer/Eventia-Final)
-[![GitHub Forks](https://img.shields.io/github/forks/nithin-developer/Eventia-Final?style=social)](https://github.com/nithin-developer/Eventia-Final)
+[![GitHub Stars](https://img.shields.io/github/stars/nithin-developer/Eventia?style=social)](https://github.com/nithin-developer/Eventia)
+[![GitHub Forks](https://img.shields.io/github/forks/nithin-developer/Eventia?style=social)](https://github.com/nithin-developer/Eventia)
 
 **"The future of software development is here - and it's powered by AI."** 🚀
 
